@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: robotics-banking
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/banking}
+    username: ${DB_USERNAME:banking}
+    password: ${DB_PASSWORD:banking}
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false

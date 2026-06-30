@@ -13,3 +13,10 @@ spring:
       hibernate:
         format_sql: true
     open-in-view: false
+
+external:
+  log:
+    enabled: ${EXTERNAL_LOG_ENABLED:false}
+    url: https://httpstat.us/200
+    connect-timeout: 2s
+    read-timeout: 3s

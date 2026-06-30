@@ -1,10 +1,12 @@
 package com.robotics.banking.controller;
 
 import com.robotics.banking.dto.request.CreateAccountRequest;
+import com.robotics.banking.dto.request.DebitRequest;
 import com.robotics.banking.dto.request.DepositRequest;
 import com.robotics.banking.dto.response.AccountResponse;
 import com.robotics.banking.dto.response.TransactionResponse;
 import com.robotics.banking.service.AccountService;
+import com.robotics.banking.service.DebitService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -24,6 +26,7 @@ import java.util.List;
 public class AccountController {
 
     private final AccountService accountService;
+    private final DebitService debitService;
 
     @PostMapping("/users/{userId}/accounts")
     @ResponseStatus(HttpStatus.CREATED)
@@ -44,5 +47,11 @@ public class AccountController {
     @PostMapping("/accounts/{id}/deposit")
     public TransactionResponse deposit(@PathVariable Long id, @Valid @RequestBody DepositRequest request) {
         return accountService.deposit(id, request);
+    }
+
+    @PostMapping("/accounts/{id}/debit")
+    public TransactionResponse debit(@PathVariable Long id,
+                                     @Valid @RequestBody DebitRequest request) {
+        return debitService.debit(id, request);
     }
 }

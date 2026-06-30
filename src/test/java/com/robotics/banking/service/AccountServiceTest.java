@@ -1,6 +1,7 @@
 package com.robotics.banking.service;
 
 import com.robotics.banking.dto.request.CreateAccountRequest;
+import com.robotics.banking.dto.request.DebitRequest;
 import com.robotics.banking.dto.request.DepositRequest;
 import com.robotics.banking.dto.response.AccountResponse;
 import com.robotics.banking.dto.response.TransactionResponse;
@@ -110,5 +111,36 @@ class AccountServiceTest {
 
         assertThat(second.balanceAfter()).isEqualByComparingTo("100.00");
         assertThat(accountService.get(account.getId()).balance()).isEqualByComparingTo("100.00");
+    }
+
+    @Test
+    void debitReducesBalanceAndWritesLedgerEntry() {
+        User user = entityManager.persist(new User("Ada", "ada@example.com"));
+        Account account = new Account(user, Currency.EUR);
+        account.setBalance(new BigDecimal("100.0000"));
+        entityManager.persist(account);
+        entityManager.flush();
+
+        TransactionResponse response = accountService.debit(
+                account.getId(), new DebitRequest(new BigDecimal("30.00"), "rent"));
+
+        assertThat(response.type()).isEqualTo(TransactionType.DEBIT);
+        assertThat(response.amount()).isEqualByComparingTo("30.00");
+        assertThat(response.balanceAfter()).isEqualByComparingTo("70.00");
+        assertThat(accountService.get(account.getId()).balance()).isEqualByComparingTo("70.00");
+    }
+
+    @Test
+    void debitWithInsufficientFundsThrows409() {
+        User user = entityManager.persist(new User("Ada", "ada@example.com"));
+        Account account = new Account(user, Currency.EUR);
+        account.setBalance(new BigDecimal("20.0000"));
+        entityManager.persist(account);
+        entityManager.flush();
+
+        assertThatThrownBy(() -> accountService.debit(account.getId(), new DebitRequest(new BigDecimal("50.00"), null)))
+                .isInstanceOf(ResponseStatusException.class)
+                .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
+                .isEqualTo(HttpStatus.CONFLICT);
     }
 }

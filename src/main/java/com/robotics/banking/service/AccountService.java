@@ -1,6 +1,7 @@
 package com.robotics.banking.service;
 
 import com.robotics.banking.dto.request.CreateAccountRequest;
+import com.robotics.banking.dto.request.DebitRequest;
 import com.robotics.banking.dto.request.DepositRequest;
 import com.robotics.banking.dto.response.AccountResponse;
 import com.robotics.banking.dto.response.TransactionResponse;
@@ -58,6 +59,22 @@ public class AccountService {
         account.setBalance(newBalance);
 
         Transaction transaction = new Transaction(account, TransactionType.DEPOSIT,
+                amount, account.getCurrency(), newBalance, request.description());
+        return toResponse(transactionRepository.save(transaction));
+    }
+
+    @Transactional
+    public TransactionResponse debit(Long accountId, DebitRequest request) {
+        Account account = getEntity(accountId);
+        BigDecimal amount = request.amount().setScale(MONEY_SCALE, MONEY_ROUNDING);
+        if (account.getBalance().compareTo(amount) < 0) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT,
+                    "Insufficient funds in account " + accountId);
+        }
+        BigDecimal newBalance = account.getBalance().subtract(amount);
+        account.setBalance(newBalance);
+
+        Transaction transaction = new Transaction(account, TransactionType.DEBIT,
                 amount, account.getCurrency(), newBalance, request.description());
         return toResponse(transactionRepository.save(transaction));
     }

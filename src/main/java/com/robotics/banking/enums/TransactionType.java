@@ -1,5 +1,6 @@
 package com.robotics.banking.enums;
 
 public enum TransactionType {
-    DEPOSIT
+    DEPOSIT,
+    DEBIT
 }

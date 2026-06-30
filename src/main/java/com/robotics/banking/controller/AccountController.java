@@ -1,7 +1,9 @@
 package com.robotics.banking.controller;
 
 import com.robotics.banking.dto.request.CreateAccountRequest;
+import com.robotics.banking.dto.request.DepositRequest;
 import com.robotics.banking.dto.response.AccountResponse;
+import com.robotics.banking.dto.response.TransactionResponse;
 import com.robotics.banking.service.AccountService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -37,5 +39,10 @@ public class AccountController {
     @GetMapping("/accounts/{id}")
     public AccountResponse get(@PathVariable Long id) {
         return accountService.get(id);
+    }
+
+    @PostMapping("/accounts/{id}/deposit")
+    public TransactionResponse deposit(@PathVariable Long id, @Valid @RequestBody DepositRequest request) {
+        return accountService.deposit(id, request);
     }
 }

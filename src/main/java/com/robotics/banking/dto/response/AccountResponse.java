@@ -1,6 +1,6 @@
 package com.robotics.banking.dto.response;
 
-import com.robotics.banking.model.Currency;
+import com.robotics.banking.enums.Currency;
 
 import java.math.BigDecimal;
 

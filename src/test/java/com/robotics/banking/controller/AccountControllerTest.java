@@ -1,7 +1,9 @@
 package com.robotics.banking.controller;
 
 import com.robotics.banking.dto.response.AccountResponse;
-import com.robotics.banking.model.Currency;
+import com.robotics.banking.dto.response.TransactionResponse;
+import com.robotics.banking.enums.Currency;
+import com.robotics.banking.enums.TransactionType;
 import com.robotics.banking.service.AccountService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -85,5 +88,27 @@ class AccountControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.length()").value(2))
                 .andExpect(jsonPath("$[1].currency").value("USD"));
+    }
+
+    @Test
+    void depositReturns200WithLedgerEntry() throws Exception {
+        when(accountService.deposit(eq(10L), any())).thenReturn(new TransactionResponse(
+                5L, 10L, TransactionType.DEPOSIT, new BigDecimal("100.0000"),
+                Currency.EUR, new BigDecimal("100.0000"), "salary", Instant.now()));
+
+        mockMvc.perform(post("/api/accounts/10/deposit")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"amount\":100.00,\"description\":\"salary\"}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.type").value("DEPOSIT"))
+                .andExpect(jsonPath("$.balanceAfter").value(100.0));
+    }
+
+    @Test
+    void depositWithNonPositiveAmountReturns400() throws Exception {
+        mockMvc.perform(post("/api/accounts/10/deposit")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"amount\":-5.00}"))
+                .andExpect(status().isBadRequest());
     }
 }

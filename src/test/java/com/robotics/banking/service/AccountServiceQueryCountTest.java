@@ -1,9 +1,9 @@
 package com.robotics.banking.service;
 
 import com.robotics.banking.dto.response.AccountResponse;
-import com.robotics.banking.model.Account;
-import com.robotics.banking.model.Currency;
-import com.robotics.banking.model.User;
+import com.robotics.banking.entity.Account;
+import com.robotics.banking.enums.Currency;
+import com.robotics.banking.entity.User;
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.SessionFactory;
 import org.hibernate.stat.Statistics;

@@ -2,7 +2,7 @@ package com.robotics.banking.service;
 
 import com.robotics.banking.dto.request.CreateUserRequest;
 import com.robotics.banking.dto.response.UserResponse;
-import com.robotics.banking.model.User;
+import com.robotics.banking.entity.User;
 import com.robotics.banking.persistence.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

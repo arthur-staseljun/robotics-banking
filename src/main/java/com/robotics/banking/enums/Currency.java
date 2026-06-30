@@ -1,4 +1,4 @@
-package com.robotics.banking.model;
+package com.robotics.banking.enums;
 
 /**
  * Every account holds exactly one currency.

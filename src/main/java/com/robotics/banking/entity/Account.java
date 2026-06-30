@@ -1,5 +1,6 @@
-package com.robotics.banking.model;
+package com.robotics.banking.entity;
 
+import com.robotics.banking.enums.Currency;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;

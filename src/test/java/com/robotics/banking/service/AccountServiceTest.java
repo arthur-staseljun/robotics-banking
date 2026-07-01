@@ -138,7 +138,9 @@ class AccountServiceTest {
         entityManager.persist(account);
         entityManager.flush();
 
-        assertThatThrownBy(() -> accountService.debit(account.getId(), new DebitRequest(new BigDecimal("50.00"), null)))
+        Long accountId = account.getId();
+        DebitRequest request = new DebitRequest(new BigDecimal("50.00"), null);
+        assertThatThrownBy(() -> accountService.debit(accountId, request))
                 .isInstanceOf(ResponseStatusException.class)
                 .extracting(ex -> ((ResponseStatusException) ex).getStatusCode())
                 .isEqualTo(HttpStatus.CONFLICT);

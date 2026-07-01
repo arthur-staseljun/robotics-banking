@@ -39,6 +39,8 @@ class AccountControllerTest {
     @MockBean
     private DebitService debitService;
 
+    private static final Instant CREATED_AT = Instant.parse("2026-01-01T00:00:00Z");
+
     @Test
     void createAccountReturns201WithBody() throws Exception {
         when(accountService.create(eq(1L), any()))
@@ -98,7 +100,7 @@ class AccountControllerTest {
     void depositReturns200WithLedgerEntry() throws Exception {
         when(accountService.deposit(eq(10L), any())).thenReturn(new TransactionResponse(
                 5L, 10L, TransactionType.DEPOSIT, new BigDecimal("100.0000"),
-                Currency.EUR, new BigDecimal("100.0000"), "salary", Instant.now()));
+                Currency.EUR, new BigDecimal("100.0000"), "salary", CREATED_AT));
 
         mockMvc.perform(post("/api/accounts/10/deposit")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -120,7 +122,7 @@ class AccountControllerTest {
     void debitReturns200WithLedgerEntry() throws Exception {
         when(debitService.debit(eq(10L), any())).thenReturn(new TransactionResponse(
                 6L, 10L, TransactionType.DEBIT, new BigDecimal("30.0000"),
-                Currency.EUR, new BigDecimal("70.0000"), "rent", Instant.now()));
+                Currency.EUR, new BigDecimal("70.0000"), "rent", CREATED_AT));
 
         mockMvc.perform(post("/api/accounts/10/debit")
                         .contentType(MediaType.APPLICATION_JSON)

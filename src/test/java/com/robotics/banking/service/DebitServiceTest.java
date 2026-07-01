@@ -36,11 +36,13 @@ class DebitServiceTest {
     @InjectMocks
     private DebitService debitService;
 
+    private static final Instant CREATED_AT = Instant.parse("2026-01-01T00:00:00Z");
+
     @Test
     void callsExternalLogBeforeDebitingAndReturnsResult() {
         DebitRequest request = new DebitRequest(new BigDecimal("10.00"), "rent");
         TransactionResponse expected = new TransactionResponse(1L, 1L, TransactionType.DEBIT,
-                new BigDecimal("10.00"), Currency.EUR, new BigDecimal("90.00"), "rent", Instant.now());
+                new BigDecimal("10.00"), Currency.EUR, new BigDecimal("90.00"), "rent", CREATED_AT);
         when(accountService.debit(eq(1L), any())).thenReturn(expected);
 
         TransactionResponse result = debitService.debit(1L, request);

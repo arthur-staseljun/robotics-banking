@@ -2,11 +2,11 @@
 
 case "${1}" in
   run)
-    echo "==> Starting Postgres..."
-    docker compose up -d --wait
+    echo "==> Building backend..."
+    (cd backend && mvn -q clean package)
 
-    echo "==> Starting application..."
-    exec mvn spring-boot:run
+    echo "==> Starting Postgres + backend..."
+    exec docker compose up --build -d
     ;;
   stop)
     echo "==> Stopping Postgres..."

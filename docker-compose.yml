@@ -16,5 +16,18 @@ services:
       timeout: 3s
       retries: 5
 
+  backend:
+    build: ./backend
+    container_name: banking-backend
+    environment:
+      DB_URL: jdbc:postgresql://postgres:5432/banking
+      DB_USERNAME: banking
+      DB_PASSWORD: banking
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
 volumes:
   banking-pgdata:

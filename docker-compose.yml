@@ -7,7 +7,7 @@ services:
       POSTGRES_USER: banking
       POSTGRES_PASSWORD: banking
     ports:
-      - "5432:5432"
+      - "5435:5432"
     volumes:
       - banking-pgdata:/var/lib/postgresql/data
     healthcheck:

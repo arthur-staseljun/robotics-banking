@@ -2,5 +2,7 @@ package com.robotics.banking.enums;
 
 public enum TransactionType {
     DEPOSIT,
-    DEBIT
+    DEBIT,
+    EXCHANGE_OUT,
+    EXCHANGE_IN
 }

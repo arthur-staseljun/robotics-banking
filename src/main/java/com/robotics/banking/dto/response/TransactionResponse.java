@@ -14,5 +14,6 @@ public record TransactionResponse(
         Currency currency,
         BigDecimal balanceAfter,
         String description,
-        Instant createdAt) {
+        Instant createdAt,
+        Long counterpartyTransactionId) {
 }

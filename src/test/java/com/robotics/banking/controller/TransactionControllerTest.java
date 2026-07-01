@@ -40,7 +40,7 @@ class TransactionControllerTest {
     void historyReturnsPageJson() throws Exception {
         when(transactionService.getHistory(eq(1L), any(Pageable.class))).thenReturn(new PageImpl<>(List.of(
                 new TransactionResponse(5L, 1L, TransactionType.DEPOSIT, new BigDecimal("100.0000"),
-                        Currency.EUR, new BigDecimal("100.0000"), "salary", CREATED_AT))));
+                        Currency.EUR, new BigDecimal("100.0000"), "salary", CREATED_AT, null))));
 
         mockMvc.perform(get("/api/accounts/1/transactions"))
                 .andExpect(status().isOk())
@@ -52,7 +52,7 @@ class TransactionControllerTest {
     @Test
     void getTransactionReturns200() throws Exception {
         when(transactionService.get(5L)).thenReturn(new TransactionResponse(5L, 1L, TransactionType.DEBIT,
-                new BigDecimal("30.0000"), Currency.EUR, new BigDecimal("70.0000"), "rent", CREATED_AT));
+                new BigDecimal("30.0000"), Currency.EUR, new BigDecimal("70.0000"), "rent", CREATED_AT, null));
 
         mockMvc.perform(get("/api/transactions/5"))
                 .andExpect(status().isOk())

@@ -2,7 +2,7 @@ spring:
   application:
     name: robotics-banking
   datasource:
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/banking}
+    url: ${DB_URL:jdbc:postgresql://localhost:5435/banking}
     username: ${DB_USERNAME:banking}
     password: ${DB_PASSWORD:banking}
     driver-class-name: org.postgresql.Driver
@@ -12,6 +12,7 @@ spring:
     properties:
       hibernate:
         format_sql: true
+        check_constraints: false
     open-in-view: false
 
 external:
@@ -20,3 +21,12 @@ external:
     url: https://httpstat.us/200
     connect-timeout: 2s
     read-timeout: 3s
+
+exchange:
+  base: EUR
+  rates:
+    EUR: 1
+    USD: 1.08
+    SEK: 11.30
+    GBP: 0.85
+    VND: 27500

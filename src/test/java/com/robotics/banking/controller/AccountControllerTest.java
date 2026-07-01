@@ -1,11 +1,13 @@
 package com.robotics.banking.controller;
 
 import com.robotics.banking.dto.response.AccountResponse;
+import com.robotics.banking.dto.response.ExchangeResponse;
 import com.robotics.banking.dto.response.TransactionResponse;
 import com.robotics.banking.enums.Currency;
 import com.robotics.banking.enums.TransactionType;
 import com.robotics.banking.service.AccountService;
 import com.robotics.banking.service.DebitService;
+import com.robotics.banking.service.ExchangeService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -38,6 +40,9 @@ class AccountControllerTest {
 
     @MockBean
     private DebitService debitService;
+
+    @MockBean
+    private ExchangeService exchangeService;
 
     private static final Instant CREATED_AT = Instant.parse("2026-01-01T00:00:00Z");
 
@@ -100,7 +105,7 @@ class AccountControllerTest {
     void depositReturns200WithLedgerEntry() throws Exception {
         when(accountService.deposit(eq(10L), any())).thenReturn(new TransactionResponse(
                 5L, 10L, TransactionType.DEPOSIT, new BigDecimal("100.0000"),
-                Currency.EUR, new BigDecimal("100.0000"), "salary", CREATED_AT));
+                Currency.EUR, new BigDecimal("100.0000"), "salary", CREATED_AT, null));
 
         mockMvc.perform(post("/api/accounts/10/deposit")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -122,7 +127,7 @@ class AccountControllerTest {
     void debitReturns200WithLedgerEntry() throws Exception {
         when(debitService.debit(eq(10L), any())).thenReturn(new TransactionResponse(
                 6L, 10L, TransactionType.DEBIT, new BigDecimal("30.0000"),
-                Currency.EUR, new BigDecimal("70.0000"), "rent", CREATED_AT));
+                Currency.EUR, new BigDecimal("70.0000"), "rent", CREATED_AT, null));
 
         mockMvc.perform(post("/api/accounts/10/debit")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -137,6 +142,31 @@ class AccountControllerTest {
         mockMvc.perform(post("/api/accounts/10/debit")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"amount\":0}"))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    void exchangeReturns200WithBothLegs() throws Exception {
+        TransactionResponse out = new TransactionResponse(7L, 10L, TransactionType.EXCHANGE_OUT,
+                new BigDecimal("100.0000"), Currency.EUR, new BigDecimal("0.0000"), null, CREATED_AT, null);
+        TransactionResponse in = new TransactionResponse(8L, 11L, TransactionType.EXCHANGE_IN,
+                new BigDecimal("108.0000"), Currency.USD, new BigDecimal("108.0000"), null, CREATED_AT, 7L);
+        when(exchangeService.exchange(any())).thenReturn(new ExchangeResponse(out, in));
+
+        mockMvc.perform(post("/api/accounts/exchange")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fromAccountId\":10,\"toAccountId\":11,\"amount\":100.00}"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.out.type").value("EXCHANGE_OUT"))
+                .andExpect(jsonPath("$.in.type").value("EXCHANGE_IN"))
+                .andExpect(jsonPath("$.in.counterpartyTransactionId").value(7));
+    }
+
+    @Test
+    void exchangeWithNonPositiveAmountReturns400() throws Exception {
+        mockMvc.perform(post("/api/accounts/exchange")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("{\"fromAccountId\":10,\"toAccountId\":11,\"amount\":0}"))
                 .andExpect(status().isBadRequest());
     }
 }

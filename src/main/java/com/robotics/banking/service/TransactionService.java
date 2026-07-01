@@ -41,6 +41,7 @@ public class TransactionService {
                 transaction.getCurrency(),
                 transaction.getBalanceAfter(),
                 transaction.getDescription(),
-                transaction.getCreatedAt());
+                transaction.getCreatedAt(),
+                transaction.getCounterpartyTransactionId());
     }
 }

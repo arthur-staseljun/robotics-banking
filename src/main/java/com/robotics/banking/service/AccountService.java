@@ -9,6 +9,7 @@ import com.robotics.banking.entity.Account;
 import com.robotics.banking.entity.Transaction;
 import com.robotics.banking.enums.TransactionType;
 import com.robotics.banking.entity.User;
+import com.robotics.banking.money.Money;
 import com.robotics.banking.persistence.AccountRepository;
 import com.robotics.banking.persistence.TransactionRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,15 +19,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class AccountService {
-
-    private static final int MONEY_SCALE = 4;
-    private static final RoundingMode MONEY_ROUNDING = RoundingMode.HALF_EVEN;
 
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
@@ -54,7 +51,7 @@ public class AccountService {
     @Transactional
     public TransactionResponse deposit(Long accountId, DepositRequest request) {
         Account account = getEntity(accountId);
-        BigDecimal amount = request.amount().setScale(MONEY_SCALE, MONEY_ROUNDING);
+        BigDecimal amount = Money.normalize(request.amount());
         BigDecimal newBalance = account.getBalance().add(amount);
         account.setBalance(newBalance);
 
@@ -66,7 +63,7 @@ public class AccountService {
     @Transactional
     public TransactionResponse debit(Long accountId, DebitRequest request) {
         Account account = getEntity(accountId);
-        BigDecimal amount = request.amount().setScale(MONEY_SCALE, MONEY_ROUNDING);
+        BigDecimal amount = Money.normalize(request.amount());
         if (account.getBalance().compareTo(amount) < 0) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                     "Insufficient funds in account " + accountId);
@@ -92,6 +89,7 @@ public class AccountService {
     private TransactionResponse toResponse(Transaction transaction) {
         return new TransactionResponse(transaction.getId(), transaction.getAccount().getId(),
                 transaction.getType(), transaction.getAmount(), transaction.getCurrency(),
-                transaction.getBalanceAfter(), transaction.getDescription(), transaction.getCreatedAt());
+                transaction.getBalanceAfter(), transaction.getDescription(), transaction.getCreatedAt(),
+                transaction.getCounterpartyTransactionId());
     }
 }

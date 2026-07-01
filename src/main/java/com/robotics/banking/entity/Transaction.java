@@ -58,6 +58,9 @@ public class Transaction {
     @Column(updatable = false)
     private String description;
 
+    @Column(updatable = false)
+    private Long counterpartyTransactionId;
+
     @Column(nullable = false, updatable = false)
     private Instant createdAt;
 

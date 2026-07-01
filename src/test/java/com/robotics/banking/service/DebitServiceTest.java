@@ -42,7 +42,7 @@ class DebitServiceTest {
     void callsExternalLogBeforeDebitingAndReturnsResult() {
         DebitRequest request = new DebitRequest(new BigDecimal("10.00"), "rent");
         TransactionResponse expected = new TransactionResponse(1L, 1L, TransactionType.DEBIT,
-                new BigDecimal("10.00"), Currency.EUR, new BigDecimal("90.00"), "rent", CREATED_AT);
+                new BigDecimal("10.00"), Currency.EUR, new BigDecimal("90.00"), "rent", CREATED_AT, null);
         when(accountService.debit(eq(1L), any())).thenReturn(expected);
 
         TransactionResponse result = debitService.debit(1L, request);

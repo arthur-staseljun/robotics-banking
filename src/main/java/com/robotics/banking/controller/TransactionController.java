@@ -2,12 +2,14 @@ package com.robotics.banking.controller;
 
 import com.robotics.banking.dto.response.TransactionResponse;
 import com.robotics.banking.service.TransactionService;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,13 +18,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
+@Validated
 public class TransactionController {
 
     private final TransactionService transactionService;
 
     @GetMapping("/accounts/{accountId}/transactions")
     public Page<TransactionResponse> history(
-            @PathVariable Long accountId,
+            @PathVariable @Positive Long accountId,
             @PageableDefault(size = 10) Pageable pageable) {
         Pageable newestFirst = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
                 Sort.by(Sort.Direction.DESC, "createdAt"));
@@ -30,7 +33,7 @@ public class TransactionController {
     }
 
     @GetMapping("/transactions/{id}")
-    public TransactionResponse get(@PathVariable Long id) {
+    public TransactionResponse get(@PathVariable @Positive Long id) {
         return transactionService.get(id);
     }
 }

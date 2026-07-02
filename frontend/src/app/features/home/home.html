@@ -1,0 +1,21 @@
+<main>
+  <h1>Accounts</h1>
+
+  @if (loading()) {
+    <p>Loading…</p>
+  } @else if (error()) {
+    <p>{{ error() }}</p>
+  } @else if (accounts().length === 0) {
+    <p>No accounts yet.</p>
+  } @else {
+    <ul>
+      @for (account of accounts(); track account.id) {
+        <li>
+          <a [routerLink]="['/accounts', account.id]">
+            {{ account.currency }} — {{ account.balance | currency: account.currency }}
+          </a>
+        </li>
+      }
+    </ul>
+  }
+</main>

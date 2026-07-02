@@ -10,6 +10,9 @@
     <p>Balance: {{ acc.balance | currency: acc.currency }}</p>
   }
 
+  <h2>Balance over time</h2>
+  <app-balance-chart [transactions]="chartData()" />
+
   <h2>Transactions</h2>
 
   @if (loading()) {
@@ -37,5 +40,9 @@
         }
       </tbody>
     </table>
+
+    @if (loadingMore()) {
+      <p>Loading more…</p>
+    }
   }
 </main>

@@ -1,0 +1,7 @@
+@if (polyline(); as points) {
+  <svg [attr.viewBox]="'0 0 ' + width + ' ' + height" width="100%">
+    <polyline [attr.points]="points" fill="none" stroke="black" stroke-width="1" />
+  </svg>
+} @else {
+  <p>Not enough data for a chart.</p>
+}

@@ -27,6 +27,7 @@
           <th>Amount</th>
           <th>Balance after</th>
           <th>Date</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -36,6 +37,7 @@
             <td>{{ tx.amount | currency: tx.currency }}</td>
             <td>{{ tx.balanceAfter | currency: tx.currency }}</td>
             <td>{{ tx.createdAt | date: 'short' }}</td>
+            <td><a [routerLink]="['/transactions', tx.id]">View</a></td>
           </tr>
         }
       </tbody>

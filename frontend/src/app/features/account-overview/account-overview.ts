@@ -42,6 +42,7 @@ export class AccountOverview implements OnInit {
     });
     this.transactionService.history(this.accountId, 0, CHART_LIMIT).subscribe({
       next: (page) => this.chartData.set(page.content),
+      error: () => this.chartData.set([]),
     });
     this.loadNextPage();
   }

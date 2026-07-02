@@ -1,0 +1,33 @@
+<main>
+  @if (error()) {
+    <p>{{ error() }}</p>
+  }
+
+  @if (transaction(); as tx) {
+    <a class="no-print" [routerLink]="['/accounts', tx.accountId]">Back to account</a>
+
+    <h1>Transaction {{ tx.id }}</h1>
+    <dl>
+      <dt>Type</dt>
+      <dd>{{ tx.type }}</dd>
+      <dt>Amount</dt>
+      <dd>{{ tx.amount | currency: tx.currency }}</dd>
+      <dt>Balance after</dt>
+      <dd>{{ tx.balanceAfter | currency: tx.currency }}</dd>
+      <dt>Date</dt>
+      <dd>{{ tx.createdAt | date: 'medium' }}</dd>
+      <dt>Description</dt>
+      <dd>{{ tx.description }}</dd>
+      @if (tx.counterpartyTransactionId) {
+        <dt>Counterparty transaction</dt>
+        <dd>
+          <a [routerLink]="['/transactions', tx.counterpartyTransactionId]">
+            {{ tx.counterpartyTransactionId }}
+          </a>
+        </dd>
+      }
+    </dl>
+
+    <button class="no-print" type="button" (click)="exportPdf()">Export PDF</button>
+  }
+</main>

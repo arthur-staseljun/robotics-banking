@@ -13,4 +13,8 @@ export class TransactionService {
     const params = new HttpParams().set('page', page).set('size', size);
     return this.http.get<Page<Transaction>>(`${this.baseUrl}/accounts/${accountId}/transactions`, { params });
   }
+
+  get(id: number): Observable<Transaction> {
+    return this.http.get<Transaction>(`${this.baseUrl}/transactions/${id}`);
+  }
 }

@@ -1,0 +1,41 @@
+<main>
+  <a routerLink="/">Back to accounts</a>
+
+  @if (error()) {
+    <p>{{ error() }}</p>
+  }
+
+  @if (account(); as acc) {
+    <h1>{{ acc.currency }} account</h1>
+    <p>Balance: {{ acc.balance | currency: acc.currency }}</p>
+  }
+
+  <h2>Transactions</h2>
+
+  @if (loading()) {
+    <p>Loading…</p>
+  } @else if (transactions().length === 0) {
+    <p>No transactions yet.</p>
+  } @else {
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Amount</th>
+          <th>Balance after</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (tx of transactions(); track tx.id) {
+          <tr>
+            <td>{{ tx.type }}</td>
+            <td>{{ tx.amount | currency: tx.currency }}</td>
+            <td>{{ tx.balanceAfter | currency: tx.currency }}</td>
+            <td>{{ tx.createdAt | date: 'short' }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  }
+</main>

@@ -11,4 +11,8 @@ export class AccountService {
   listByUser(userId: number): Observable<Account[]> {
     return this.http.get<Account[]>(`${this.baseUrl}/users/${userId}/accounts`);
   }
+
+  get(id: number): Observable<Account> {
+    return this.http.get<Account>(`${this.baseUrl}/accounts/${id}`);
+  }
 }

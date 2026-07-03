@@ -5,11 +5,15 @@ case "${1}" in
     echo "==> Building backend..."
     (cd backend && mvn -q clean package)
 
-    echo "==> Starting Postgres + backend..."
-    exec docker compose up --build -d
+    echo "==> Building images and starting Postgres + backend + frontend..."
+    docker compose up --build -d
+
+    echo
+    echo "Frontend: http://localhost:8081"
+    echo "Backend:  http://localhost:8080/api"
     ;;
   stop)
-    echo "==> Stopping Postgres..."
+    echo "==> Stopping the stack..."
     docker compose down
     ;;
   *)
